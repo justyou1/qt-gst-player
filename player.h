@@ -4,12 +4,14 @@
 
 class Player
 {
-    GstElement  *m_sink,*m_source,*m_pipeline;
+    GstElement  *m_pipeline;
+    unsigned long m_wid;
 public:
     Player();
     ~Player();
     int play(const char* url);
     int stop();
+    int paused();
     int attach(unsigned long wId);
 
 };

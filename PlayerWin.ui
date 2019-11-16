@@ -17,10 +17,10 @@
    <widget class="QWidget" name="widget" native="true">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>150</y>
-      <width>201</width>
-      <height>121</height>
+      <x>20</x>
+      <y>10</y>
+      <width>761</width>
+      <height>491</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -30,8 +30,8 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>530</x>
-      <y>140</y>
+      <x>10</x>
+      <y>510</y>
       <width>89</width>
       <height>25</height>
      </rect>
@@ -43,14 +43,40 @@
    <widget class="QLineEdit" name="lineEdit">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>40</y>
-      <width>341</width>
+      <x>450</x>
+      <y>510</y>
+      <width>331</width>
       <height>25</height>
      </rect>
     </property>
     <property name="text">
      <string>rtsp://192.168.199.105:8554/</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>510</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>paused</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>510</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>stop</string>
     </property>
    </widget>
   </widget>

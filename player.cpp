@@ -42,33 +42,32 @@ static void new_pad (GstElement *element, GstPad *pad,gpointer data)
 
 Player::Player()
 {
-    GstElement  *avdec, *depay, *conv;
-
+    GstElement  *avdec, *depay, *conv,*source,*sink;
     if(!gst_is_initialized())
         gst_init(NULL,NULL);
     /*create pipeline*/
     m_pipeline = gst_pipeline_new ("video-player");
     /* set the source audio file */
-    m_source = gst_element_factory_make ("rtspsrc", "rtsp-source");
+    source = gst_element_factory_make ("rtspsrc", "rtsp-source");
 
     avdec = gst_element_factory_make ("avdec_h264", "avdec");
     depay = gst_element_factory_make ("rtph264depay", "depay");
     conv = gst_element_factory_make ("autovideoconvert", "converter");
-    m_sink = gst_element_factory_make ("xvimagesink", "video-output");
-    if (!m_pipeline || !m_source || !depay || !avdec || !conv || !m_sink) {
+    sink = gst_element_factory_make ("xvimagesink", "video-output");
+    if (!m_pipeline || !source || !depay || !avdec || !conv || !sink) {
         g_print ("One element could not be created\n");
     }
 
     /* put all elements in a bin */
     gst_bin_add_many (GST_BIN (m_pipeline),
-              m_source, depay, NULL);
-    g_signal_connect(m_source, "pad-added", G_CALLBACK(new_pad),depay);
+              source, depay, NULL);
+    g_signal_connect(source, "pad-added", G_CALLBACK(new_pad),depay);
     gst_bin_add_many (GST_BIN (m_pipeline),
-              avdec, conv, m_sink, NULL);
-    if(!gst_element_link_many (depay,avdec, conv,m_sink,NULL)){
+              avdec, conv, sink, NULL);
+    if(!gst_element_link_many (depay,avdec, conv,sink,NULL)){
          printf("Failed to link elements 4\n");
     }
-    gst_element_set_state(m_sink, GST_STATE_READY);
+    gst_element_set_state(sink, GST_STATE_READY);
 }
 Player::~Player()
 {
@@ -79,13 +78,36 @@ Player::~Player()
 }
 int Player::attach(unsigned long wId)
 {
-    gst_video_overlay_set_window_handle (GST_VIDEO_OVERLAY (m_sink), wId);
+    m_wid = wId;
     return 0;
 }
 int Player::play(const char* url)
 {
-    g_object_set (m_source, "location",url, NULL);
+    GstElement * source=gst_bin_get_by_name (GST_BIN(m_pipeline),"rtsp-source");
+    g_object_set (source, "location",url, NULL);
+    gst_object_unref (GST_OBJECT (source));
+
+    GstElement * sink=gst_bin_get_by_name (GST_BIN(m_pipeline),"video-output");
+    gst_video_overlay_set_window_handle (GST_VIDEO_OVERLAY (sink), m_wid);
+    gst_object_unref (GST_OBJECT (sink));
+
     GstStateChangeReturn sret = gst_element_set_state (m_pipeline,GST_STATE_PLAYING);
 
+    printf("%d\n",sret);
+    return sret == GST_STATE_CHANGE_SUCCESS ? 0 : -1;
+}
+int Player::stop(){
+    //GstState state,pending;
+    GstStateChangeReturn sret;
+    //GstStateChangeReturn sret = gst_element_get_state(m_pipeline,&state,&pending,100);
+    //if(sret == GST_STATE_CHANGE_SUCCESS && state == GST_STATE_PLAYING)
+        sret = gst_element_set_state (m_pipeline,GST_STATE_NULL);
+        printf("%d\n",sret);
+    return sret == GST_STATE_CHANGE_SUCCESS ? 0 : -1;
+}
+int Player::paused(){
+
+    GstStateChangeReturn sret = gst_element_set_state (m_pipeline,GST_STATE_PAUSED);
+    printf("%d\n",sret);
     return sret == GST_STATE_CHANGE_SUCCESS ? 0 : -1;
 }

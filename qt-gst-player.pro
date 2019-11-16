@@ -19,7 +19,8 @@ PKGCONFIG += gstreamermm-1.0
 
 SOURCES += \
     PlayerWin.cpp \
-    main.cpp
+    main.cpp \
+    player.cpp
 
 HEADERS += \
     PlayerWin.h \
@@ -27,7 +28,7 @@ HEADERS += \
 
 FORMS += \
     PlayerWin.ui
-LIBS+= -L../qt-gst-player -lPlayer
+#LIBS+= -L../qt-gst-player -lPlayer
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin

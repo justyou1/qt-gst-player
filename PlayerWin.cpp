@@ -21,3 +21,13 @@ void PlayerWin::on_pushButton_clicked()
 {
     player.play(ui->lineEdit->text().toUtf8().data());
 }
+
+void PlayerWin::on_pushButton_2_clicked()
+{
+    player.paused();
+}
+
+void PlayerWin::on_pushButton_3_clicked()
+{
+    player.stop();
+}
